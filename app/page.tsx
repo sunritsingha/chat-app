@@ -1,12 +1,11 @@
-import { FC } from 'react'
-import Button from './components/ui/Button'
+import db from "./lib/db";
 
-interface pageProps {
+
+export default async function Home() {
   
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <h1 className="text-2xl font-bold">Welcome to the Home Page</h1>
+    </main>
+  );
 }
-
-const page: FC<pageProps> = ({}) => {
-  return <Button size={'lg'}/>;
-}
-
-export default page
