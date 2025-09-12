@@ -1,11 +1,12 @@
 import { FC } from 'react'
+import Button from './components/ui/Button'
 
 interface pageProps {
   
 }
 
 const page: FC<pageProps> = ({}) => {
-  return <div>page</div>
+  return <Button size={'lg'}/>;
 }
 
 export default page
