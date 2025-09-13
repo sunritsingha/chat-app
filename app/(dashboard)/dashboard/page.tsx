@@ -8,7 +8,7 @@ interface pageProps {
 
 const page = async ({}) => {
     const session =  await getServerSession(authOptions)
-  return <rect>Hello {session?.user?.name}</rect>
+  return <div>Hello {session?.user?.name}</div>
 }
 
 export default page
