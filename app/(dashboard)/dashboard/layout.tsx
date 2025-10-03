@@ -8,6 +8,8 @@ import { FC, ReactNode } from "react";
 import SignOutButton from "@/app/components/SignOutButton";
 import FriendRequestSidebarOption from "@/app/components/FriendRequestSidebarOption";
 import { fetchRedis } from "@/app/helpers/redis";
+import { getFriendsByUserId } from "@/app/helpers/get_friends_by_user_id";
+import SideBarChatList from "@/app/components/SideBarChatList";
 
 interface LayoutProps {
   children: ReactNode;
@@ -24,7 +26,7 @@ const sideBarOptions: SideBarOptions[] = [
   { id: 1, name: "Add Friend", href: "/dashboard/add", Icon: "UserPlus" },
 ];
 
-const Sidebar: FC<{ session: any; unseenRequestsCount: number }> = ({ session, unseenRequestsCount }) => (
+const Sidebar: FC<{ session: any; unseenRequestsCount: number; friends: any[] }> = ({ session, unseenRequestsCount, friends }) => (
   <div className="flex h-full w-full max-w-xs grow flex-col overflow-y-auto border-r border-gray-200 bg-white px-6">
     {/* Logo */}
     <Link href={"/dashboard"} className="flex h-15 shrink-0 items-center">
@@ -32,15 +34,19 @@ const Sidebar: FC<{ session: any; unseenRequestsCount: number }> = ({ session, u
     </Link>
 
     {/* Chats Section */}
-    <div className="text-xs font-semibold leading-6 text-gray-500 mt-6 mb-4">
-      your chats
-    </div>
+    {friends.length > 0 ? (
+      <div className="mt-5 mb-3 px-2">
+        <div className="text-xs font-semibold leading-6 text-gray-400">
+          your chats
+        </div>
+      </div>
+    ) : null}
 
     {/* Navigation */}
     <nav className="flex flex-1 flex-col">
       <ul role="list" className="flex flex-1 flex-col gap-y-4">
         {/* Placeholder for user chats */}
-        <li>//chats that the user has</li>
+        <SideBarChatList friends={friends} sessionId={session.user.id} />
 
         {/* Overview Section */}
         <li>
@@ -67,14 +73,14 @@ const Sidebar: FC<{ session: any; unseenRequestsCount: number }> = ({ session, u
               </li>
             );
           })}
-        </ul>
-
         <li>
           <FriendRequestSidebarOption
             sessionId={session.id}
             initialRequestCount={unseenRequestsCount}
           />
         </li>
+
+        </ul>
 
         {/* User Profile & Sign Out */}
         <li className="-mx-6 mt-auto flex items-center justify-between py-4">
@@ -108,6 +114,8 @@ const Layout = async ({ children }: LayoutProps) => {
   if (!session) {
     notFound();
   }
+
+  const friends = await getFriendsByUserId(session.user.id);
   const unseenRequestsCount = (
     (await fetchRedis(
       "smembers",
@@ -116,7 +124,7 @@ const Layout = async ({ children }: LayoutProps) => {
   ).length;
   return (
     <div className="w-full flex h-screen">
-      <Sidebar session={session} unseenRequestsCount={unseenRequestsCount} />
+      <Sidebar session={session} unseenRequestsCount={unseenRequestsCount} friends={friends} />
       {children}
     </div>
   );
