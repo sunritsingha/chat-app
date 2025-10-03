@@ -48,11 +48,13 @@ const FriendRequests: FC<FriendRequestsProps> = ({
               {request.senderEmail || "Unknown sender"}
             </p>
             <button
+              onClick={() => acceptFriend(request.senderId)}
               className="w-8 h-8 grid place-items-center rounded-full bg-gray-300 transition-all duration-200 hover:bg-green-100 hover:shadow-md group active:scale-90"
             >
               <Check className="font-semibold text-green-600 w-3/4 h-3/4 transition-colors duration-200 group-hover:text-green-800" />
             </button>
             <button
+              onClick={() => denyFriend(request.senderId)}
               className="w-8 h-8 grid place-items-center rounded-full bg-gray-300 transition-all duration-200 hover:bg-red-100 hover:shadow-md group active:scale-90"
             >
               <X className="font-semibold text-red-600 w-3/4 h-3/4 transition-colors duration-200 group-hover:text-red-800" />
