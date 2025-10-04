@@ -71,7 +71,12 @@ const page = async ({ params }: { params: Promise<{ chatid: string }> }) => {
           </div>
         </div>
       </div>
-      <Messages initialMessages={initialMessages} sessionId={session.user.id} />
+      <Messages
+        initialMessages={initialMessages}
+        sessionId={session.user.id}
+        chatpartner={chatPartner}
+        sessionImage={session.user.image}
+      />
       <ChatInput chatId={chatid} chatPartner={chatPartner} />
     </div>
   );
