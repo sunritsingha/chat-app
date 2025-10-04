@@ -1,11 +1,13 @@
-import { fetchRedis } from '@/app/helpers/redis'
-import { authOptions } from '@/app/lib/auth'
-import { messageArrayValidator } from '@/app/lib/validations/message'
-import { getServerSession } from 'next-auth'
-import { notFound } from 'next/navigation'
-import { FC } from 'react'
-
-
+import ChatInput from "@/app/components/ChatInput";
+import Messages from "@/app/components/Messages";
+import { fetchRedis } from "@/app/helpers/redis";
+import { authOptions } from "@/app/lib/auth";
+import db from "@/app/lib/db";
+import { messageArrayValidator } from "@/app/lib/validations/message";
+import { getServerSession } from "next-auth";
+import Image from "next/image";
+import { notFound } from "next/navigation";
+import { FC } from "react";
 
 async function getChatMessages(chatid: string) {
   try {
@@ -25,7 +27,6 @@ async function getChatMessages(chatid: string) {
   }
 }
 
-
 const page = async ({ params }: { params: Promise<{ chatid: string }> }) => {
   const { chatid } = await params;
   const session = await getServerSession(authOptions);
@@ -34,16 +35,46 @@ const page = async ({ params }: { params: Promise<{ chatid: string }> }) => {
   }
 
   const { user } = session;
-  const [userId1, userId2] = chatid.split('--');
+  const [userId1, userId2] = chatid.split("--");
 
   if (user.id !== userId1 && user.id !== userId2) {
     return notFound();
   }
 
   const chatPartnerId = user.id === userId1 ? userId2 : userId1;
+  const chatPartner = (await db.get(`user:${chatPartnerId}`)) as User;
   const initialMessages = await getChatMessages(chatid);
 
-  return <div>page {chatid}</div>;
+  return (
+    <div className="flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)]">
+      <div className="flex sm:items-center justify-between py-3 border-b-2 border-gray-200">
+        <div className="relative  flex items-center space-x-4">
+          <div className="relative">
+            <div className="relative w-8 sm:w-12 h-8 sm:h-12">
+              <Image
+                fill
+                referrerPolicy="no-referrer"
+                src={chatPartner.image}
+                alt={`${chatPartner.name}'s profile picture`}
+                className="rounded-full"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col leading-tight">
+            <div className="flex text-xl items-center">
+              <span className="text-gray-700 mr-3 font-semibold">
+                {chatPartner.name}
+              </span>
+            </div>
+            <span className="text-sm text-gray-600">{chatPartner.email}</span>
+          </div>
+        </div>
+      </div>
+      <Messages initialMessages={initialMessages} sessionId={session.user.id} />
+      <ChatInput chatId={chatid} chatPartner={chatPartner} />
+    </div>
+  );
 };
 
-export default page
+export default page;
