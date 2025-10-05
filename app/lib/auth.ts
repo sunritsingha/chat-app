@@ -30,14 +30,17 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
+      if (user) {
+        // For Google, use user.id or user.sub
+        token.id = user.id || (user as any).sub;
+      }
       const dbUserResult = await fetchRedis(
         "get",
         `user:${token.id}`
       ) as string | null;
- 
+
       if (!dbUserResult) {
-        token.id = user!.id;
         return token;
       }
       const dbUser = JSON.parse(dbUserResult) as User;
@@ -51,7 +54,7 @@ export const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token }) {
-      if (token) {
+      if (token && session.user) {
         session.user.id = token.id;
         session.user.name = token.name;
         session.user.email = token.email;

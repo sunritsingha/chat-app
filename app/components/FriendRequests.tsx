@@ -1,8 +1,10 @@
 "use client";
 import { Check, Icon, UserPlus, X } from "lucide-react";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { pusherClient } from "../lib/pusher";
+import { toPusherKey } from "../lib/utils";
 
 interface FriendRequestsProps {
   incomingFriendrequests: IncomingFriendRequest[];
@@ -18,23 +20,45 @@ const FriendRequests: FC<FriendRequestsProps> = ({
     incomingFriendrequests
   );
 
-    const acceptFriend = async (senderId: string) => {
-    await axios.post('/api/friends/accept',
-      {id: senderId}
-    ) 
+  useEffect(() => {
+    pusherClient.subscribe(
+      toPusherKey(`user:${sessionId}:incoming_friend_requests`)
+    );
+    console.log("subscribed to pusher: user:", sessionId);
+    
+    const friendRequestHandler = ({
+      senderId,
+      senderEmail,
+    }: IncomingFriendRequest) => {
+      setFriendRequests((prev) => [...prev, { senderId, senderEmail }]);
+    };
+    pusherClient.bind("incoming_friend_requests", friendRequestHandler);
 
-    setFriendRequests((prev) => prev.filter((request) => request.senderId !== senderId))
+    return () => {
+      pusherClient.unsubscribe(
+        toPusherKey(`user:${sessionId}:incoming_friend_requests`)
+      );
+      pusherClient.unbind("incoming_friend_requests", friendRequestHandler);
+    };
+  }, []);
+
+  const acceptFriend = async (senderId: string) => {
+    await axios.post("/api/friends/accept", { id: senderId });
+
+    setFriendRequests((prev) =>
+      prev.filter((request) => request.senderId !== senderId)
+    );
     router.refresh();
-  }
+  };
 
   const denyFriend = async (senderId: string) => {
-    await axios.post('/api/friends/deny',
-      {id: senderId}
-    )
+    await axios.post("/api/friends/deny", { id: senderId });
 
-    setFriendRequests((prev) => prev.filter((request) => request.senderId !== senderId))
+    setFriendRequests((prev) =>
+      prev.filter((request) => request.senderId !== senderId)
+    );
     router.refresh();
-  }
+  };
 
   return (
     <>

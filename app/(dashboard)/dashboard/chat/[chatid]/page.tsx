@@ -76,6 +76,7 @@ const page = async ({ params }: { params: Promise<{ chatid: string }> }) => {
         sessionId={session.user.id}
         chatpartner={chatPartner}
         sessionImage={session.user.image}
+        chatId={chatid}
       />
       <ChatInput chatId={chatid} chatPartner={chatPartner} />
     </div>

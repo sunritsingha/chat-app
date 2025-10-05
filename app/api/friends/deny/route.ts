@@ -2,6 +2,8 @@ import { authOptions } from "@/app/lib/auth";
 import { getServerSession } from "next-auth";
 import z from "zod";
 import db from "@/app/lib/db";
+import { pusherServer } from "@/app/lib/pusher";
+import { toPusherKey } from "@/app/lib/utils";
 
 export async function POST(req: Request) {
   try {
@@ -15,6 +17,14 @@ export async function POST(req: Request) {
     const { id: idToDeny } = z.object({ id: z.string() }).parse(body);
 
     await db.srem(`user:${session.user.id}:incoming_friend_requests`, idToDeny);
+
+    // Notify sidebar to decrement count
+    await pusherServer.trigger(
+      toPusherKey(`user:${session.user.id}:incoming_friend_requests`),
+      'friend_request_removed',
+      { senderId: idToDeny }
+    );
+
     return new Response("OK");
   } catch (error) {
 

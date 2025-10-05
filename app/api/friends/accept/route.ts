@@ -3,7 +3,8 @@ import { authOptions } from "@/app/lib/auth";
 import db from "@/app/lib/db";
 import { getServerSession } from "next-auth";
 import z from "zod";
-import { id } from "zod/locales";
+import { pusherServer } from "@/app/lib/pusher";
+import { toPusherKey } from "@/app/lib/utils";
 
 export async function POST(req: Request) {
   try {
@@ -42,6 +43,13 @@ export async function POST(req: Request) {
     await db.sadd(`user:${idToAdd}:friends`, session.user.id);
 
     await db.srem(`user:${session.user.id}:incoming_friend_requests`, idToAdd);
+
+    // Notify sidebar to decrement count
+    await pusherServer.trigger(
+      toPusherKey(`user:${session.user.id}:incoming_friend_requests`),
+      'friend_request_removed',
+      { senderId: idToAdd }
+    );
 
     console.log("has friend request");
 

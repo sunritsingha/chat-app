@@ -1,6 +1,8 @@
 import { fetchRedis } from "@/app/helpers/redis";
 import { authOptions } from "@/app/lib/auth";
 import db from "@/app/lib/db";
+import { pusherServer } from "@/app/lib/pusher";
+import { toPusherKey } from "@/app/lib/utils";
 import { messageValidator } from "@/app/lib/validations/message";
 import { getServerSession } from "next-auth";
 import z from "zod";
@@ -47,6 +49,10 @@ export async function POST(req: Request) {
     };
 
     const message = messageValidator.parse(messageData);
+
+  //notify connected chat partners of new message
+  //console.log("Triggering Pusher:", toPusherKey(`chat:${chatId}`), 'incoming_message', message);
+  await pusherServer.trigger(toPusherKey(`chat:${chatId}`), 'incoming_message', message);
 
 
 
