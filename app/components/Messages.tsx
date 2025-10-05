@@ -27,10 +27,10 @@ const Messages: FC<MessagesProps> = ({
       pusherClient.subscribe(
         toPusherKey(`chat:${chatId}`)
       );
-      //console.log("subscribed to pusher: user:", sessionId);
+  // console.log("subscribed to pusher: user:", sessionId);
       
     const messageHandler = (message: Message) => {
-     // console.log('Received incoming_message:', message);
+  // console.log('Received incoming_message:', message);
       setMessages((prev) => [message, ...prev]);
     };
     pusherClient.bind('incoming_message', messageHandler);

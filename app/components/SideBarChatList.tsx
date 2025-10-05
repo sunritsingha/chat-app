@@ -25,7 +25,7 @@ const SideBarChatList: FC<SideBarChatListProps> = ({ friends, sessionId }) => {
     pusherClient.subscribe(toPusherKey(`user:${sessionId}:chats`));
     pusherClient.subscribe(toPusherKey(`user:${sessionId}:friends`));
     const ChatHandler = (message: extendedMessage) => {
-      //console.log("New message received in sidebar:", message);
+  // console.log("New message received in sidebar:", message);
       const shouldNotify =
         pathName !==
         `/dashboard/chat/${chatHrefConstructor(sessionId, message.senderId)}`;
@@ -77,7 +77,7 @@ const SideBarChatList: FC<SideBarChatListProps> = ({ friends, sessionId }) => {
           const unseenMessagesCount = unseenMessages.filter(
             (unseenMsg) => unseenMsg.senderId === friend.id
           ).length;
-          //console.log("sessionId", sessionId, "friend.id", friend.id);
+          // console.log("sessionId", sessionId, "friend.id", friend.id);
           return (
             <li key={friend.id}>
               <a

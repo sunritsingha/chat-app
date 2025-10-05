@@ -39,6 +39,18 @@ export async function POST(req: Request) {
       return new Response("No friend request from this user", { status: 400 });
     }
 
+    //notify added user
+    await pusherServer.trigger(
+      toPusherKey(`user:${session.user.id}:friends`),
+      "new_friend",
+      { }
+    );
+    await pusherServer.trigger(
+      toPusherKey(`user:${idToAdd}:friends`),
+      "new_friend",
+      { }
+    );
+
     await db.sadd(`user:${session.user.id}:friends`, idToAdd);
     await db.sadd(`user:${idToAdd}:friends`, session.user.id);
 
@@ -47,11 +59,11 @@ export async function POST(req: Request) {
     // Notify sidebar to decrement count
     await pusherServer.trigger(
       toPusherKey(`user:${session.user.id}:incoming_friend_requests`),
-      'friend_request_removed',
+      "friend_request_removed",
       { senderId: idToAdd }
     );
 
-    console.log("has friend request");
+  // console.log("has friend request");
 
     return new Response("OK");
   } catch (error) {

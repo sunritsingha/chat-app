@@ -38,7 +38,7 @@ export async function POST(req: Request) {
       "get",
       `user:${session.user.id}`
     ).then((res) => JSON.parse(res) as User);
-    //console.log("SENDER", sender);
+  // console.log("SENDER", sender);
 
     const messageData: Message = {
       id: crypto.randomUUID(),
@@ -50,7 +50,7 @@ export async function POST(req: Request) {
     const message = messageValidator.parse(messageData);
 
   //notify connected chat partners of new message
-  //console.log("Triggering Pusher:", toPusherKey(`chat:${chatId}`), 'incoming_message', message);
+  // console.log("Triggering Pusher:", toPusherKey(`chat:${chatId}`), 'incoming_message', message);
   await pusherServer.trigger(toPusherKey(`chat:${chatId}`), 'incoming_message', message);
   await pusherServer.trigger(toPusherKey(`user:${recipientId}:chats`), 'new_message', {
     ...message,

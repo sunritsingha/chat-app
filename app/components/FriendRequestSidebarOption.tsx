@@ -22,7 +22,7 @@ const FriendRequestSidebarOption: FC<FriendRequestSidebarOptionProps> = ({
     pusherClient.subscribe(
       toPusherKey(`user:${sessionId}:incoming_friend_requests`)
     );
-    console.log("subscribed to pusher: user:", sessionId);
+  // console.log("subscribed to pusher: user:", sessionId);
 
     const increment = () => setUnseenRequestsCount((prev) => prev + 1);
     const decrement = () => setUnseenRequestsCount((prev) => Math.max(prev - 1, 0));

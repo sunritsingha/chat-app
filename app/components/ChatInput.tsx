@@ -56,7 +56,7 @@ const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId }) => {
           aria-hidden="true"
         >
           <div className="py-px">
-            <div className="h-9" />
+            <div className="h-1.5" />
           </div>
         </div>
 
