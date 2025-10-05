@@ -48,11 +48,11 @@ export const authOptions: NextAuthOptions = {
             id: token.id,
             name: token.name,
             email: token.email,
-            image: token.picture || (user && (user as any).image) || null,
+            image: token.picture || (user && (user as User).image) || null,
           };
           try {
             await db.set(`user:${token.id}`, JSON.stringify(userData));
-          } catch (e) {
+          } catch  {
             // ignore or log error
           }
         }
