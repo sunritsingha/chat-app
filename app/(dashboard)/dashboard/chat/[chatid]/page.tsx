@@ -6,6 +6,8 @@ import db from "@/app/lib/db";
 import { messageArrayValidator } from "@/app/lib/validations/message";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
+import Link from "next/link";
+import { Icons } from "@/app/components/icons";
 import { notFound } from "next/navigation";
 
 
@@ -47,27 +49,29 @@ const page = async ({ params }: { params: Promise<{ chatid: string }> }) => {
 
   return (
   <div className="flex flex-col min-h-screen h-full flex-1 justify-between pb-4">
-      <div className="flex sm:items-center justify-between py-3 border-b-2 border-gray-200">
-        <div className="relative  flex items-center space-x-4">
-          <div className="relative">
-            <div className="relative w-8 sm:w-12 h-8 sm:h-12">
-              <Image
-                fill
-                referrerPolicy="no-referrer"
-                src={chatPartner.image}
-                alt={`${chatPartner.name}'s profile picture`}
-                className="rounded-full"
-              />
-            </div>
+      <div className="flex items-center py-3 border-b-2 border-gray-200 px-2 sm:px-0">
+        {/* Logo and profile photo side by side for mobile */}
+  <div className="flex items-center gap-10 sm:gap-3">
+          <div className="block sm:hidden">
+            <Link href="/dashboard">
+              <Icons.Logo className="h-8 w-8 text-indigo-600" />
+            </Link>
           </div>
-
-          <div className="flex flex-col leading-tight">
-            <div className="flex text-xl items-center">
-              <span className="text-gray-700 mr-3 font-semibold">
-                {chatPartner.name}
-              </span>
-            </div>
-            <span className="text-sm text-gray-600">{chatPartner.email}</span>
+          <div className="relative w-8 sm:w-12 h-8 sm:h-12">
+            <Image
+              fill
+              referrerPolicy="no-referrer"
+              src={chatPartner.image}
+              alt={`${chatPartner.name}'s profile picture`}
+              className="rounded-full"
+            />
+          </div>
+          {/* Show name and email always, including mobile */}
+          <div className="flex flex-col leading-tight min-w-0">
+            <span className="text-gray-700 font-semibold text-base sm:text-xl truncate block max-w-none"> 
+              {chatPartner.name || 'Unknown'}
+            </span>
+            <span className="text-xs sm:text-sm text-gray-600 truncate block max-w-[120px] sm:max-w-none">{chatPartner.email}</span>
           </div>
         </div>
       </div>
