@@ -4,7 +4,7 @@ import Button from "./ui/Button";
 import { addFriendValidator } from "../lib/validations/add_friend";
 import axios from "axios";
 import React from "react";
-import z, { set } from "zod";
+import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 

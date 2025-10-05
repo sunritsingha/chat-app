@@ -1,5 +1,4 @@
-import type { Session,User } from "next-auth";
-import { JWT } from "next-auth/jwt";
+import type { User } from "next-auth";
 type UserId = string;
 
 declare module "next-auth/jwt" {

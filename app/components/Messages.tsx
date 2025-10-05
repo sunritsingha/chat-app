@@ -4,7 +4,6 @@ import { Message } from "../lib/validations/message";
 import { cn, toPusherKey } from "../lib/utils";
 import Image from "next/image";
 import { pusherClient } from "../lib/pusher";
-import { set } from "zod";
 
 interface MessagesProps {
   initialMessages: Message[];
@@ -42,7 +41,7 @@ const Messages: FC<MessagesProps> = ({
         );
         pusherClient.unbind('incoming_message', messageHandler);
       };
-    }, []);
+    }, [chatId]);
 
   return (
     <div

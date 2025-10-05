@@ -1,5 +1,5 @@
 'use client'
-import { FC , ReactNode} from 'react'
+import { FC } from 'react'
 import { Toaster } from 'react-hot-toast'
 
 interface ProvidersProps {

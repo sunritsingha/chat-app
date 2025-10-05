@@ -5,7 +5,6 @@ import { pusherServer } from "@/app/lib/pusher";
 import { toPusherKey } from "@/app/lib/utils";
 import { messageValidator } from "@/app/lib/validations/message";
 import { getServerSession } from "next-auth";
-import z from "zod";
 
 export async function POST(req: Request) {
   try {

@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { FC, use, useEffect, useState } from "react";
+import { FC,  useEffect, useState } from "react";
 import { User } from "lucide-react";
 import React from "react";
 import { pusherClient } from "../lib/pusher";
@@ -37,7 +37,7 @@ const FriendRequestSidebarOption: FC<FriendRequestSidebarOptionProps> = ({
       pusherClient.unbind("incoming_friend_requests", increment);
       pusherClient.unbind("friend_request_removed", decrement);
     };
-  }, []);
+  }, [sessionId]);
 
   return (
     <Link

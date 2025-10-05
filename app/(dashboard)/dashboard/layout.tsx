@@ -1,6 +1,6 @@
 import { Icon, Icons } from "@/app/components/icons";
 import { authOptions } from "@/app/lib/auth";
-import { getServerSession } from "next-auth";
+import { getServerSession, Session } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -26,7 +26,7 @@ const sideBarOptions: SideBarOptions[] = [
   { id: 1, name: "Add Friend", href: "/dashboard/add", Icon: "UserPlus" },
 ];
 
-const Sidebar: FC<{ session: any; unseenRequestsCount: number; friends: any[] }> = ({ session, unseenRequestsCount, friends }) => (
+const Sidebar: FC<{ session: Session; unseenRequestsCount: number; friends: User[] }> = ({ session, unseenRequestsCount, friends }) => (
   <div className="flex h-full w-full max-w-xs grow flex-col overflow-y-auto border-r border-gray-200 bg-white px-6">
     {/* Logo */}
     <Link href={"/dashboard"} className="flex h-15 shrink-0 items-center">
@@ -76,7 +76,7 @@ const Sidebar: FC<{ session: any; unseenRequestsCount: number; friends: any[] }>
           })}
           <li>
             <FriendRequestSidebarOption
-              sessionId={session.id}
+              sessionId={session.user.id}
               initialRequestCount={unseenRequestsCount}
             />
           </li>
