@@ -3,7 +3,7 @@ import { UpstashRedisAdapter } from "@next-auth/upstash-redis-adapter";
 import db from "./db";
 import Google from "next-auth/providers/google";
 import { fetchRedis } from "../helpers/redis";
-import { kv } from '@vercel/kv';
+
 
 function getGoogleCredentials() {
   const clientId = process.env.GOOGLE_CLIENT_ID;
@@ -42,7 +42,7 @@ export const authOptions: NextAuthOptions = {
       ) as string | null;
 
       if (!dbUserResult) {
-        // User does not exist in DB, create it
+        // User does not exist in DB, create it using your Redis client
         if (token.id && token.email && token.name) {
           const userData = {
             id: token.id,
@@ -50,9 +50,8 @@ export const authOptions: NextAuthOptions = {
             email: token.email,
             image: token.picture || (user && (user as any).image) || null,
           };
-          // Use Upstash Redis directly (via @vercel/kv or your db instance)
           try {
-            await kv.set(`user:${token.id}`, JSON.stringify(userData));
+            await db.set(`user:${token.id}`, JSON.stringify(userData));
           } catch (e) {
             // ignore or log error
           }
