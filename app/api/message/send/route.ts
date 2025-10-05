@@ -53,6 +53,11 @@ export async function POST(req: Request) {
   //notify connected chat partners of new message
   //console.log("Triggering Pusher:", toPusherKey(`chat:${chatId}`), 'incoming_message', message);
   await pusherServer.trigger(toPusherKey(`chat:${chatId}`), 'incoming_message', message);
+  await pusherServer.trigger(toPusherKey(`user:${recipientId}:chats`), 'new_message', {
+    ...message,
+    senderImg: sender.image,
+    senderName: sender.name,
+  });
 
 
 
