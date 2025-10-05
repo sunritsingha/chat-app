@@ -1,7 +1,20 @@
+
 # Live Demo
 
 Check out the production app here: [https://chat-app-tau-dun.vercel.app/](https://chat-app-tau-dun.vercel.app/)
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+# Features
+
+- **Google Authentication**: Secure login with Google OAuth.
+- **Real-time Messaging**: Instant chat updates using Pusher and Upstash Redis.
+- **Friend Requests**: Send, accept, and deny friend requests.
+- **Responsive UI**: Fully responsive, mobile-first design with modern navigation and mobile chat header.
+- **Chat List & Notifications**: Sidebar with chat list, unseen message indicators, and real-time friend request notifications.
+- **Loading Skeletons**: Smooth loading experience with animated skeletons.
+- **Profile Management**: View your profile and sign out from the sidebar.
+- **Modern Tech Stack**: Built with Next.js App Router, TypeScript, TailwindCSS, NextAuth, Upstash Redis, Pusher, and more.
+
+---
 
 ## Getting Started
 
