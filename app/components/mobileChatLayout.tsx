@@ -17,6 +17,7 @@ import FriendRequestSidebarOption from "./FriendRequestSidebarOption";
 import SideBarChatList from "./SideBarChatList";
 import { Session } from "next-auth";
 import { usePathname } from "next/navigation";
+import { useMemo } from "react";
 interface MobileChatLayoutProps {
   friends: User[];
   unseenRequestCount: number;
@@ -30,14 +31,43 @@ const MobileChatLayout: FC<MobileChatLayoutProps> = ({friends, unseenRequestCoun
   useEffect(() => {
     setOpen(false);
   }, [pathName]);
+  // Detect if on a chat page and extract chat partner info
+  const isChatPage = !!pathName && pathName.startsWith('/dashboard/chat/') && pathName.split('/').length === 4;
+  // Find chat partner if on chat page
+  const chatPartner = useMemo(() => {
+    if (!isChatPage) return null;
+    const chatid = pathName.split('/')[3];
+    const [userId1, userId2] = chatid.split('--');
+    // Find the friend who matches the chat partner id
+    const partnerId = session.user.id === userId1 ? userId2 : userId1;
+    return friends.find(f => f.id === partnerId) || null;
+  }, [isChatPage, pathName, friends, session.user.id]);
+
   return (
-    <div className='fixed bg-zinc-50 border-b border-zinc-200 top-0 inset-x-0 py-2 px-4'>
-      <div className='w-full flex justify-between items-center'>
-        <Link
-          href='/dashboard'
-          className={ButtonVariants({ variant: 'ghost' })}>
-          <Icons.Logo className='h-6 w-auto text-indigo-600' />
-        </Link>
+    <div className='fixed bg-zinc-50 border-b border-zinc-200 top-0 inset-x-0 py-2 px-4 z-50'>
+      <div className='w-full flex items-center justify-between'>
+        <div className='flex items-center gap-3 min-w-0'>
+          <Link
+            href='/dashboard'
+            className={ButtonVariants({ variant: 'ghost' })}>
+            <Icons.Logo className='h-6 w-auto text-indigo-600' />
+          </Link>
+          {/* Show chat partner info in mobile navbar if on chat page */}
+          {isChatPage && chatPartner && (
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="relative w-8 h-8">
+                <Image
+                  fill
+                  referrerPolicy="no-referrer"
+                  src={chatPartner.image}
+                  alt={`${chatPartner.name}'s profile picture`}
+                  className="rounded-full"
+                />
+              </div>
+              <span className="text-gray-700 font-semibold text-base truncate block max-w-[100px]">{chatPartner.name || 'Unknown'}</span>
+            </div>
+          )}
+        </div>
         <Button onClick={() => setOpen(true)} className='gap-4'>
           Menu <Menu className='h-6 w-6' />
         </Button>
