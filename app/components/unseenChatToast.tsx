@@ -1,7 +1,7 @@
 import { cn} from '../lib/utils'
 import { chatHrefConstructor } from '../lib/utils'
 import Image from 'next/image'
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { toast, type Toast } from 'react-hot-toast'
 
 interface UnseenChatToastProps {
@@ -13,6 +13,7 @@ interface UnseenChatToastProps {
   senderMessage: string
 }
 
+
 const UnseenChatToast: FC<UnseenChatToastProps> = ({
   t,
   senderId,
@@ -21,41 +22,49 @@ const UnseenChatToast: FC<UnseenChatToastProps> = ({
   senderName,
   senderMessage,
 }) => {
+  const [expanded, setExpanded] = useState(false);
   return (
     <div
       className={cn(
-        'max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5',
+        'max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex flex-col ring-1 ring-black ring-opacity-5 transition-all duration-200 my-2',
         { 'animate-enter': t.visible, 'animate-leave': !t.visible }
-      )}>
-      <a
-        onClick={() => toast.dismiss(t.id)}
-        href={`/dashboard/chat/${chatHrefConstructor(sessionId, senderId)}`}
-        className='flex-1 w-0 p-4'>
-        <div className='flex items-start'>
-          <div className='flex-shrink-0 pt-0.5'>
-            <div className='relative h-10 w-10'>
-              <Image
-                fill
-                referrerPolicy='no-referrer'
-                className='rounded-full'
-                src={senderImg}
-                alt={`${senderName} profile picture`}
-              />
-            </div>
-          </div>
-
-          <div className='ml-3 flex-1'>
-            <p className='text-sm font-medium text-gray-900'>{senderName}</p>
-            <p className='mt-1 text-sm text-gray-500'>{senderMessage}</p>
+      )}
+      style={{ minHeight: expanded ? '120px' : '64px', cursor: 'pointer' }}
+      onClick={() => setExpanded((prev) => !prev)}
+    >
+      <div className='flex items-start p-4'>
+        <div className='flex-shrink-0 pt-0.5'>
+          <div className='relative h-10 w-10'>
+            <Image
+              fill
+              referrerPolicy='no-referrer'
+              className='rounded-full'
+              src={senderImg}
+              alt={`${senderName} profile picture`}
+            />
           </div>
         </div>
-      </a>
-
-      <div className='flex border-l border-gray-200'>
+        <div className='ml-3 flex-1'>
+          <p className='text-sm font-medium text-gray-900'>{senderName}</p>
+          <p className='mt-1 text-sm text-gray-500 line-clamp-1'>{senderMessage}</p>
+          {expanded && (
+            <div className='mt-2 text-xs text-gray-600'>
+              <a
+                onClick={e => { e.stopPropagation(); toast.dismiss(t.id); }}
+                href={`/dashboard/chat/${chatHrefConstructor(sessionId, senderId)}`}
+                className='text-indigo-600 hover:underline font-semibold'
+              >
+                Go to chat
+              </a>
+            </div>
+          )}
+        </div>
+      </div>
+      <div className='flex border-t border-gray-200'>
         <button
-          onClick={() => toast.dismiss(t.id)}
-          className='w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500'>
-          Close
+          onClick={e => { e.stopPropagation(); toast.dismiss(t.id); }}
+          className='w-full border border-transparent rounded-b-lg p-2 flex items-center justify-center text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500'>
+          {expanded ? 'Close' : 'Dismiss'}
         </button>
       </div>
     </div>

@@ -56,6 +56,7 @@ const Sidebar: FC<{ session: any; unseenRequestsCount: number; friends: any[] }>
         </li>
 
         {/* Sidebar Options */}
+
         <ul role="list" className="-mx-2 space-y-0.5">
           {sideBarOptions.map((options) => {
             const Icon = Icons[options.Icon];
@@ -73,12 +74,12 @@ const Sidebar: FC<{ session: any; unseenRequestsCount: number; friends: any[] }>
               </li>
             );
           })}
-        <li>
-          <FriendRequestSidebarOption
-            sessionId={session.id}
-            initialRequestCount={unseenRequestsCount}
-          />
-        </li>
+          <li>
+            <FriendRequestSidebarOption
+              sessionId={session.id}
+              initialRequestCount={unseenRequestsCount}
+            />
+          </li>
 
         </ul>
 

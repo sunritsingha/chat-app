@@ -29,9 +29,9 @@ const SideBarChatList: FC<SideBarChatListProps> = ({ friends, sessionId }) => {
       const shouldNotify =
         pathName !==
         `/dashboard/chat/${chatHrefConstructor(sessionId, message.senderId)}`;
-      if (shouldNotify) return;
+      if (!shouldNotify) return;
 
-      //should be notified only if not on the chat page with the sender
+      // Only notify if not on the chat page with the sender
       toast.custom((t) => (
         <UnseenChatToast
           t={t}
@@ -43,7 +43,7 @@ const SideBarChatList: FC<SideBarChatListProps> = ({ friends, sessionId }) => {
         />
       ));
 
-       setUnseenMessages((prev) => [...prev, message]);
+      setUnseenMessages((prev) => [...prev, message]);
     };
 
     const newFriendHandler = () => {
