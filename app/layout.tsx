@@ -1,10 +1,7 @@
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./components/Providers";
-
-
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "FriendZone",
   description: "a simple Chat app",
+  icons: [
+    { rel: "icon", url: "/favicon.png", sizes: "48x48", type: "image/png" },
+  ],
 };
 
 export default async function RootLayout({
